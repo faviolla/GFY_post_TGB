@@ -7,6 +7,11 @@ const sessions = {};
 
 bot.start((ctx) => {
   sessions[ctx.chat.id] = {};
+  ctx.reply("Вітаю! 👋\n\nЩоб створити нове повідомлення для клієнта, напишіть /new");
+});
+
+bot.command("new", (ctx) => {
+  sessions[ctx.chat.id] = {};
   ctx.reply("Введіть ПІБ клієнта:");
 });
 
@@ -61,6 +66,7 @@ bot.on("text", (ctx) => {
 
   ctx.reply(result);
   delete sessions[chatId];
+  ctx.reply("Готово ✅\n\nЩоб створити нове повідомлення — напишіть /new");
 });
 
 bot.launch();
