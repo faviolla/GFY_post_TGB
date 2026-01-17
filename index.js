@@ -6,8 +6,9 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 const sessions = {};
 
 bot.start((ctx) => {
-  sessions[ctx.chat.id] = {};
-  ctx.reply("Вітаю! 👋\n\nЩоб створити нове повідомлення для клієнта, напишіть /new");
+  ctx.reply(
+    "Вітаю! 👋\n\nЩоб створити нове повідомлення для клієнта, напишіть /new"
+  );
 });
 
 bot.command("new", (ctx) => {
@@ -16,8 +17,14 @@ bot.command("new", (ctx) => {
 });
 
 bot.on("text", (ctx) => {
+  if (ctx.message.text.startsWith("/")) return;
+
   const chatId = ctx.chat.id;
   const data = sessions[chatId];
+
+  if (!data) {
+    return ctx.reply("Напишіть /new, щоб почати нове підтвердження 😊");
+  }
 
   if (!data.fullName) {
     data.fullName = ctx.message.text;
