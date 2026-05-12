@@ -14,6 +14,24 @@ bot.command("new", (ctx) => {
   ctx.reply("Введіть ПІБ клієнта:");
 });
 
+bot.on("callback_query", (ctx) => {
+  const chatId = ctx.chat.id;
+  const data = sessions[chatId];
+
+  if (!data) return;
+
+  if (ctx.callbackQuery.data === "collagen") {
+    data.product = "Primabiotic Collagen";
+  }
+
+  if (ctx.callbackQuery.data === "hyaluron") {
+    data.product = "Primabiotic Hyaluron";
+  }
+
+  ctx.answerCbQuery();
+  ctx.reply("Кількість:");
+});
+
 bot.on("text", (ctx) => {
   if (ctx.message.text.startsWith("/")) return;
 
@@ -41,7 +59,19 @@ bot.on("text", (ctx) => {
 
   if (!data.address) {
     data.address = ctx.message.text;
-    return ctx.reply("Кількість:");
+
+    return ctx.reply("Оберіть продукт:", {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "Primabiotic Collagen", callback_data: "collagen" }],
+          [{ text: "Primabiotic Hyaluron", callback_data: "hyaluron" }],
+        ],
+      },
+    });
+  }
+
+  if (!data.product) {
+    return;
   }
 
   if (!data.qty) {
@@ -61,7 +91,7 @@ bot.on("text", (ctx) => {
 
 Дякуємо за ваше замовлення в GoodforYou!
 
-🔹 Primabiotic Collagen (${data.qty} одиниць)
+🔹 ${data.product} (${data.qty} одиниць)
 🔹 Ціна: ${data.price} грн
 🔹 Оплата при отриманні
 🔹 ${data.address}
