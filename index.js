@@ -6,9 +6,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 const sessions = {};
 
 bot.start((ctx) => {
-  ctx.reply(
-    "Вітаю! 👋\n\nЩоб створити нове повідомлення для клієнта, напишіть /new"
-  );
+  ctx.reply("Вітаю! 👋\n\nЩоб створити нове повідомлення для клієнта, напишіть /new");
 });
 
 bot.command("new", (ctx) => {
@@ -51,12 +49,12 @@ bot.on("text", (ctx) => {
     return ctx.reply("Ціна:");
   }
 
-  if (!data.paylink) {
-    data.paylink = ctx.message.text;
+  if (!data.price) {
+    data.price = ctx.message.text;
     return ctx.reply("Посилання для оплати:");
   }
 
-  data.price = ctx.message.text;
+  data.paylink = ctx.message.text;
 
   const result = `
 Вітаємо, ${data.name}! 😊
