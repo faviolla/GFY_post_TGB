@@ -51,6 +51,11 @@ bot.on("text", (ctx) => {
     return ctx.reply("Ціна:");
   }
 
+  if (!data.paylink) {
+    data.paylink = ctx.message.text;
+    return ctx.reply("Посилання для оплати:");
+  }
+
   data.price = ctx.message.text;
 
   const result = `
@@ -60,16 +65,21 @@ bot.on("text", (ctx) => {
 
 ❗️Будь ласка, підтвердьте замовлення у відповідь на це повідомлення, щоб ми могли передати його на відправку.
 
-🔹 Продукт: Primabiotic Collagen (${data.qty} одиниць)
+🔹 Primabiotic Collagen (${data.qty} одиниць)
 🔹 Ціна: ${data.price} грн
-🔹 Оплата: Оплата при отриманні
-🔹 Доставка: ${data.address}
+🔹 Оплата при отриманні
+🔹 ${data.address}
 
 Одержувач: ${data.fullName}
 📞 ${data.phone}
 
+Для підтвердження замовлення потрібна передоплата 200 грн (входить у вартість замовлення).
+Після оплати одразу передаємо замовлення на відправку.
+
+Оплата: ${data.paylink}
+
 З турботою,
-Команда GoodforYou 💚`;
+GoodforYou 💚`;
 
   ctx.reply(result);
   delete sessions[chatId];
