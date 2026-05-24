@@ -7,7 +7,7 @@ const sessions = {};
 
 //Start
 
-bot.start((ctx) => {
+const startHandler = (ctx) => {
   ctx.reply("Вітаю! 👋\n\nОберіть тип повідомлення:", {
     reply_markup: {
       inline_keyboard: [
@@ -16,7 +16,10 @@ bot.start((ctx) => {
       ],
     },
   });
-});
+};
+
+bot.start(startHandler);
+bot.command("new", startHandler);
 
 //Buttons
 
@@ -56,7 +59,7 @@ bot.on("callback_query", (ctx) => {
 
   ctx.answerCbQuery();
   ctx.reply("Кількість:");
-})
+});
 
 // bot.command("new", (ctx) => {
 //   sessions[ctx.chat.id] = {};
@@ -153,6 +156,9 @@ bot.on("text", (ctx) => {
   }
 
   data.paylink = ctx.message.text;
+  
+  const totalPrice = Number(data.price);
+  const remainingPrice = totalPrice - 200;
 
   const result = `
 Вітаємо, ${data.name}! 😊
@@ -161,7 +167,7 @@ bot.on("text", (ctx) => {
 
 🔹 ${data.product} (${data.qty} одиниць)
 🔹 Сума замовлення: ${data.price} грн
-🔹 До оплати при отриманні: ${data.price - 200} грн
+🔹 До оплати при отриманні: ${remainingPrice} грн
 
 📍 Нова пошта ${data.address}
 
