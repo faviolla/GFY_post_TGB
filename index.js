@@ -157,8 +157,11 @@ bot.on("text", (ctx) => {
 
   data.paylink = ctx.message.text;
   
-  const totalPrice = Number(data.price);
-  const remainingPrice = totalPrice - 200;
+  const totalPrice = Number(
+    data.price.replace(",", ".").replace(/\s/g, "")
+  );
+
+  const remainingPrice = (totalPrice - 200).toFixed(2);
 
   const result = `
 Вітаємо, ${data.name}! 😊
