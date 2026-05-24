@@ -193,5 +193,5 @@ bot.launch(() => {
   console.log("Bot started ✅");
 });
 
-process.on("uncaughtException", console.error);
-process.on("unhandledRejection", console.error);
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
