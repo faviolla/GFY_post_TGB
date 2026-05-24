@@ -5,32 +5,81 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const sessions = {};
 
+//Start
+
 bot.start((ctx) => {
-  ctx.reply("Вітаю! 👋\n\nЩоб створити нове повідомлення для клієнта, напишіть /new");
+  ctx.reply("Вітаю! 👋\n\nОберіть тип повідомлення:", {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "Передоплата 200 грн", callback_data: "prepay" }],
+        [{ text: "Повідомлення з ТТН", callback_data: "ttn" }],
+      ],
+    },
+  });
 });
 
-bot.command("new", (ctx) => {
-  sessions[ctx.chat.id] = {};
-  ctx.reply("Введіть ПІБ клієнта:");
-});
+//Buttons
 
 bot.on("callback_query", (ctx) => {
   const chatId = ctx.chat.id;
+  const action = ctx.callbackQuery.data;
+
+  if (action === "prepay") {
+    sessions[chatId] = {
+      type: "prepay",
+    };
+
+    ctx.answerCbQuery();
+    return ctx.reply("Введіть ПІБ клієнта:");
+  }
+
+  if (action === "ttn") {
+    sessions[chatId] = {
+      type: "ttn",
+    };
+
+    ctx.answerCbQuery();
+    return ctx.reply("Введіть номер ТТН:");
+  }
+
   const data = sessions[chatId];
 
   if (!data) return;
 
-  if (ctx.callbackQuery.data === "collagen") {
+  if (action === "collagen") {
     data.product = "Primabiotic Collagen";
   }
 
-  if (ctx.callbackQuery.data === "hyaluron") {
+  if (action === "hyaluron") {
     data.product = "Primabiotic Hyaluron";
   }
 
   ctx.answerCbQuery();
   ctx.reply("Кількість:");
-});
+})
+
+// bot.command("new", (ctx) => {
+//   sessions[ctx.chat.id] = {};
+//   ctx.reply("Введіть ПІБ клієнта:");
+// });
+
+// bot.on("callback_query", (ctx) => {
+//   const chatId = ctx.chat.id;
+//   const data = sessions[chatId];
+
+//   if (!data) return;
+
+//   if (ctx.callbackQuery.data === "collagen") {
+//     data.product = "Primabiotic Collagen";
+//   }
+
+//   if (ctx.callbackQuery.data === "hyaluron") {
+//     data.product = "Primabiotic Hyaluron";
+//   }
+
+//   ctx.answerCbQuery();
+//   ctx.reply("Кількість:");
+// });
 
 bot.on("text", (ctx) => {
   if (ctx.message.text.startsWith("/")) return;
@@ -39,7 +88,26 @@ bot.on("text", (ctx) => {
   const data = sessions[chatId];
 
   if (!data) {
-    return ctx.reply("Напишіть /new, щоб почати нове підтвердження 😊");
+    return ctx.reply("Напишіть /start 😊");
+  }
+
+  if (data.type === "ttn") {
+    data.ttn = ctx.message.text;
+
+    const result = `
+Оплату отримали, дякуємо!
+
+Номер ТТН Нової пошти: ${data.ttn}
+
+Посилку готуємо до передачі перевізнику 📦
+
+Дякуємо, що обрали GoodforYou 💚`;
+
+    ctx.reply(result);
+
+    delete sessions[chatId];
+
+    return ctx.reply("Готово ✅\n\nНапишіть /start для нового повідомлення");
   }
 
   if (!data.fullName) {
@@ -89,28 +157,30 @@ bot.on("text", (ctx) => {
   const result = `
 Вітаємо, ${data.name}! 😊
 
-Дякуємо за замовлення в GoodforYou!
+Ваше замовлення готове до відправки 📦
 
 🔹 ${data.product} (${data.qty} одиниць)
-🔹 Ціна: ${data.price} грн
+🔹 Сума замовлення: ${data.price} грн
 🔹 До оплати при отриманні: ${data.price - 200} грн
-🔹 ${data.address}
+
+📍 Нова пошта ${data.address}
 
 Одержувач: ${data.fullName}
 📞 ${data.phone}
 
-Для підтвердження замовлення необхідна передоплата 200 грн.
-Після оплати одразу передаємо замовлення на відправку.
+Для відправки необхідно внести передоплату 200 грн.
+Передоплата враховується у загальну суму замовлення.
 
-Посилання для оплати:
+🔒 Безпечна оплата через Monobank:
 ${data.paylink}
 
-З турботою,
-GoodforYou 💚`;
+Після оплати надішліть “+” або скрін оплати у відповідь 💚
+
+`;
 
   ctx.reply(result);
   delete sessions[chatId];
-  ctx.reply("Готово ✅\n\nЩоб створити нове повідомлення — напишіть /new");
+  ctx.reply("Готово ✅\n\nНапишіть /start для нового повідомлення");
 });
 
 bot.launch();
