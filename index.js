@@ -189,4 +189,9 @@ ${data.paylink}
   ctx.reply("Готово ✅\n\nНапишіть /start для нового повідомлення");
 });
 
-bot.launch();
+bot.launch(() => {
+  console.log("Bot started ✅");
+});
+
+process.on("uncaughtException", console.error);
+process.on("unhandledRejection", console.error);
