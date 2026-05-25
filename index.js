@@ -161,6 +161,8 @@ bot.on("text", (ctx) => {
     data.price.replace(",", ".").replace(/\s/g, "")
   );
 
+  const formattedTotalPrice = totalPrice.toFixed(2);
+
   const remainingPrice = (totalPrice - 200).toFixed(2);
 
   const result = `
@@ -169,7 +171,7 @@ bot.on("text", (ctx) => {
 Ваше замовлення готове до відправки 📦
 
 🔹 ${data.product} (${data.qty} одиниць)
-🔹 Сума замовлення: ${(data.price).toFixed(2)} грн
+🔹 Сума замовлення: ${formattedTotalPrice} грн
 🔹 До оплати при отриманні: ${remainingPrice} грн
 
 📍 Нова пошта ${data.address}
