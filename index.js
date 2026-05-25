@@ -169,7 +169,7 @@ bot.on("text", (ctx) => {
 Ваше замовлення готове до відправки 📦
 
 🔹 ${data.product} (${data.qty} одиниць)
-🔹 Сума замовлення: ${data.price} грн
+🔹 Сума замовлення: ${data.price.toFixed(2)} грн
 🔹 До оплати при отриманні: ${remainingPrice} грн
 
 📍 Нова пошта ${data.address}
