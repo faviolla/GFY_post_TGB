@@ -11,8 +11,8 @@ const startHandler = (ctx) => {
   ctx.reply("Вітаю! 👋\n\nОберіть тип повідомлення:", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "Передоплата 200 грн", callback_data: "prepay" }],
-        [{ text: "Повідомлення з ТТН", callback_data: "ttn" }],
+        [{ text: "1. Передоплата 200 грн", callback_data: "prepay" }],
+        [{ text: "2. Повідомлення з ТТН", callback_data: "ttn" }],
       ],
     },
   });
