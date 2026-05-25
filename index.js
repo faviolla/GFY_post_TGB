@@ -32,7 +32,7 @@ bot.on("callback_query", (ctx) => {
       type: "prepay",
     };
 
-    ctx.answerCbQuery();
+    ctx.answerCbQuery().catch(() => {});
     return ctx.reply("Введіть ПІБ клієнта:");
   }
 
@@ -41,7 +41,7 @@ bot.on("callback_query", (ctx) => {
       type: "ttn",
     };
 
-    ctx.answerCbQuery();
+    ctx.answerCbQuery().catch(() => {});
     return ctx.reply("Введіть номер ТТН:");
   }
 
@@ -57,7 +57,7 @@ bot.on("callback_query", (ctx) => {
     data.product = "Primabiotic Hyaluron";
   }
 
-  ctx.answerCbQuery();
+  ctx.answerCbQuery().catch(() => {});
   ctx.reply("Кількість:");
 });
 
@@ -80,7 +80,7 @@ bot.on("callback_query", (ctx) => {
 //     data.product = "Primabiotic Hyaluron";
 //   }
 
-//   ctx.answerCbQuery();
+//   ctx.answerCbQuery().catch(() => {});
 //   ctx.reply("Кількість:");
 // });
 
@@ -198,3 +198,7 @@ bot.launch(() => {
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
+
+bot.catch((err) => {
+  console.error("Bot error:", err);
+});
