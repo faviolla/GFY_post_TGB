@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { Telegraf } = require("telegraf");
+const express = require("express");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -203,4 +204,16 @@ process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
 bot.catch((err) => {
   console.error("Bot error:", err);
+});
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Bot is running ✅");
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
